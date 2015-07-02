@@ -6,24 +6,36 @@
 import sqlite3, sys
 from datetime import date, datetime # now = datetime.now()
 
-db_file = "local.db"
-db_table = "temperature"
-
-# Define commands for sql functions
-db = sqlite3.connect(db_file)
-c = db.cursor() 
-
 # [dateTime] - [MAC] - [description] - [CRC] - [celsius] - [fahrenheit]
-def sql_temperature(db_table, json_blob):
-	# Create table if it doesnt already exsist
-    sql = 'CREATE TABLE IF NOT EXSISTS ' + db_table + ' (datetime TIMESTAMP, mac TEXT, crc TEXT, celsius REAL, fahrenheit REAL)'
+def temperature(db_file, db_table, json_blob):
+	# Define commands for sql functions
+    db = sqlite3.connect(db_file)
+    c = db.cursor() 
+
+    # Create table if it doesn’t already exist
+    sql = 'CREATE TABLE IF NOT EXISTS %s (datetime TIMESTAMP, mac TEXT, crc TEXT, celsius REAL, fahrenheit REAL)'  % ( db_table )
+    print sql
     c.execute(sql)
 
+    # Insert data
+    sql = "INSERT INTO %s VALUES('%s', 'mac', 'crc', 2.34, 98.5)" % ( db_table, str(datetime.now()) )
+    print sql
+    c.execute(sql)
 
+    # Save data to database
+    db.commit()
 
+    # Testing Things 
+    sql = "SELECT * FROM %s" % ( db_table )
+    c.execute(sql)
+    rows = c.fetchall()
+    
+    for row in rows:
+        print row
+    
+    # Close open connections
+    c.close()    
 
-    c.commit()
-    c.close()
     return 
 
-create_table("test", "nothing")
+sql_temperature("local.db", "temperature", "nothing")

@@ -6,7 +6,7 @@
 # Last Update by Sean Cline (smcline06@gmail.com)
 # Date: 06/23/2015
 
-import ConfigParser, dallas, json
+import ConfigParser, dallas, json, sql
 from flask import Flask, request, jsonify
 
 CONFIG_FILE = "config/app.conf"
@@ -33,8 +33,8 @@ def index():
 	return "Index Page, or something :)"
 
 # Gets temperature data and displays data as JSON
-@app.route('/api/temperature', methods=['GET'])
-def temperature():
+@app.route('/api/temperature/get', methods=['GET'])
+def temperature_get():
 	# Load configuration settings
 	config_section_temperature = loadconfig('TEMPERATURE')
 
@@ -54,6 +54,40 @@ def temperature():
 	# Defined in dallas.py script
 	return jsonify(json_data)
 	#return json.dumps(config_section_temperature)
+
+
+# Gets temperature data and displays data as JSON
+@app.route('/api/temperature/set', methods=['GET'])
+def temperature_set():
+	# Load configuration settings
+	config_section_db = loadconfig('DB')
+
+	# Define JSON key
+	json_data['temperature'] = dallas.main()
+
+	# Add JSON value for temperature probe description if defined in config file
+	for key in config_section_temperature.keys():
+		if key is not "__name__":
+			try:
+				# Errors if key does not exsist
+				json_data['temperature'][key].update({"description":config_section_temperature.get(key)})
+			except:
+				# Ignore and move on
+				pass
+
+	db_database = config_section_db['Database_Name']
+	db_table = config_section_db['Table_Name']
+
+	sql.temperature(db_database, db_table, json_data)
+
+	print json_data
+
+	# Defined in dallas.py script
+	return jsonify(json_data)
+	#return json.dumps(config_section_temperature)
+
+
+
 
 # Start program
 if __name__ == '__main__':
