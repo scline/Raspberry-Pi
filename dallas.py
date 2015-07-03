@@ -1,7 +1,7 @@
 # This python script is created for the Rasberry Pi utalizing the DS18B20 temperature sensor
 # ref: https://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/temperature/
 
-import json, sys, os, re
+import time, json, sys, os, re
 
 # Main process
 def main():
@@ -58,7 +58,7 @@ def readtemperature(probe_file):
 	fahrenheit = 9.0/5.0 * celsius + 32
 
 	# Return as dictionary, will be formating this in JSON
-	return({'celsius': round(celsius,2), 'fahrenheit' : round(fahrenheit,2), 'crc error' : crc_error})
+	return({'celsius': round(celsius,2), 'fahrenheit' : round(fahrenheit,2), 'crc error' : crc_error, 'datetime': time.strftime("%Y-%m-%d %H:%M")})
 
 # Start program
 if __name__ == '__main__':

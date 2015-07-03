@@ -59,8 +59,11 @@ def temperature_get():
 # Gets temperature data and displays data as JSON
 @app.route('/api/temperature/set', methods=['GET'])
 def temperature_set():
-	# Load configuration settings
+	# Load  database configuration settings
 	config_section_db = loadconfig('DB')
+
+	# Load configuration settings
+	config_section_temperature = loadconfig('TEMPERATURE')
 
 	# Define JSON key
 	json_data['temperature'] = dallas.main()
@@ -75,12 +78,14 @@ def temperature_set():
 				# Ignore and move on
 				pass
 
-	db_database = config_section_db['Database_Name']
-	db_table = config_section_db['Table_Name']
-
-	sql.temperature(db_database, db_table, json_data)
+	db_database = config_section_db.get('Database_Name')
+	db_table = config_section_db.get('Table_Name')
 
 	print json_data
+	
+	sql.temperature(db_database, db_table, json_data)
+
+
 
 	# Defined in dallas.py script
 	return jsonify(json_data)
