@@ -6,7 +6,7 @@
 # Last Update by Sean Cline (smcline06@gmail.com)
 # Date: 06/23/2015
 
-import ConfigParser, dallas, json, sql
+import ConfigParser, sqlite3, dallas, json, sql
 from flask import Flask, request, jsonify
 
 CONFIG_FILE = "config/app.conf"
@@ -55,7 +55,6 @@ def temperature_get():
 	return jsonify(json_data)
 	#return json.dumps(config_section_temperature)
 
-
 # Gets temperature data and displays data as JSON
 @app.route('/api/temperature/set', methods=['GET'])
 def temperature_set():
@@ -78,21 +77,45 @@ def temperature_set():
 				# Ignore and move on
 				pass
 
-	db_database = config_section_db.get('Database_Name')
-	db_table = config_section_db.get('Table_Name')
+	db_database = config_section_db.get('database_name')
+	db_table = config_section_db.get('table_name')
 
 	print json_data
-	
-	sql.temperature(db_database, db_table, json_data)
-
-
+	temperature(db_database, db_table, json_data)
 
 	# Defined in dallas.py script
 	return jsonify(json_data)
 	#return json.dumps(config_section_temperature)
 
+def temperature(db_file, db_table, json):
+	# Define commands for sql functions
+	db = sqlite3.connect(db_file)
+	c = db.cursor() 
 
+	# Create table if it doesnt already exist
+	sql = 'CREATE TABLE IF NOT EXISTS %s (datetime TIMESTAMP, mac TEXT, crc TEXT, celsius REAL, fahrenheit REAL)'  % ( db_table )
+	c.execute(sql)
 
+	for mac in json:
+		# Format JSON and insert into db
+		sql = "INSERT INTO %s VALUES('%s', '%s', '%s', %.2f, %.2f)" % (db_table, json[mac]['datetime'], mac, json[mac]['crc error'], json[mac]['celsius'], json[mac]['fahrenheit'])
+		c.execute(sql)
+
+	# Save data to database
+	db.commit()
+
+	# Testing Things 
+	sql = "SELECT * FROM %s" % ( db_table )
+	c.execute(sql)
+	rows = c.fetchall()
+
+	for row in rows:
+		print row
+
+	# Close open connections
+	c.close()    
+
+	return 
 
 # Start program
 if __name__ == '__main__':
