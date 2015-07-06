@@ -9,7 +9,7 @@
 import ConfigParser, dallas, json, sql
 from flask import Flask, request, jsonify
 
-CONFIG_FILE = "config/app.conf"
+CONFIG_FILE = "/home/pi/Raspberry-Pi/config/app.conf"
 
 # Load config file and store section in dictionary format
 def loadconfig(section):
@@ -52,7 +52,7 @@ def temperature_get():
 				pass
 
 	# Defined in dallas.py script
-	return jsonify(json_data)
+	return jsonify(json_data), 200
 	#return json.dumps(config_section_temperature)
 
 # Gets temperature data and displays data as JSON
@@ -84,7 +84,7 @@ def temperature_set():
 	sql.temperature(db_database, db_table, json_data['temperature'])
 
 	# Defined in dallas.py script
-	return jsonify(json_data)
+	return jsonify(json_data), 200
 	#return json.dumps(config_section_temperature)
 
 

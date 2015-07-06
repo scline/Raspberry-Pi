@@ -10,14 +10,18 @@ import sqlite3, sys
 
 # Define commands for sql functions
 
-def main():
-	db_table = 'temperature'
-	db_file = 'local.db'
+def main(db_file, db_table):
+	# Define command shortcuts
+	db = sqlite3.connect(db_file)
+	c = db.cursor()
 
 	# Testing Things 
 	sql = "SELECT * FROM %s" % ( db_table )
 	c.execute(sql)
 	rows = c.fetchall()
+
+	for row in rows:
+		print row
 
 	return
 
@@ -26,8 +30,8 @@ def temperature(db_file, db_table, json):
 	db = sqlite3.connect(db_file)
 	c = db.cursor()
 
-	# Create table if it doesnt already exist
-	sql = 'CREATE TABLE IF NOT EXISTS %s (datetime TIMESTAMP, mac TEXT, crc TEXT, celsius REAL, fahrenheit REAL, PRIMARY KEY (datetime, mac))'  % ( db_table )
+	# Create table if it doesnt already exist, add unique clause to mac and datetime
+	sql = 'CREATE TABLE IF NOT EXISTS %s (datetime TIMESTAMP, mac TEXT, crc TEXT, celsius REAL, fahrenheit REAL, PRIMARY KEY (datetime, mac), UNIQUE (datetime, mac) ON CONFLICT REPLACE)'  % ( db_table )
 	c.execute(sql)
 
 	for mac in json:
@@ -53,6 +57,6 @@ def temperature(db_file, db_table, json):
 
 # Start program
 if __name__ == '__main__':
-	main()
+	main("test", "temperature")
 	sys.exit(0)
 #temperature("local.db", "temperature", json['temperature'])
