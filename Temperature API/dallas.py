@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+#
 # This python script is created for the Rasberry Pi utalizing the DS18B20 temperature sensor
 # ref: https://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/temperature/
 

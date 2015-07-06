@@ -25,6 +25,15 @@ def main(db_file, db_table):
 
 	return
 
+def get_sql(db_file, db_table, sql):
+	# SELECT * FROM temperature 
+	# WHERE datetime in (
+	# SELECT MAX(datetime) as datetime
+	# FROM temperature
+	# GROUP BY mac);
+
+	return
+
 def temperature(db_file, db_table, json):
 	# Define command shortcuts
 	db = sqlite3.connect(db_file)
