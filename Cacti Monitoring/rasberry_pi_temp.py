@@ -11,13 +11,10 @@ import sys, urllib, json
 # API endpoint ip or hostname
 HOST = sys.argv[1]
 
-# Dont really need at the moment, may turn into API key for auth
-COMMUNITY = sys.argv[2]
-
 # Cacti commands
 # index - list the mac address of each temperature probe
 # num_indexes - how manny mac addresses are present in the api call
-CMD = sys.argv[3]
+CMD = sys.argv[2]
 
 # Define Variables
 api_data = {}
@@ -36,7 +33,7 @@ def main():
 		num_indexes(api_data)
 
 	if (CMD == 'get'):
-		get(api_data, sys.argv[4])
+		get(api_data, sys.argv[3])
 
 	return
 
