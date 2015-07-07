@@ -35,6 +35,9 @@ def main():
 	if (CMD == 'get'):
 		get(api_data, sys.argv[3])
 
+	if (CMD == 'query'):
+		query(api_data)
+
 	return
 
 # num_indexes - how manny mac addresses are present in the api call
@@ -55,7 +58,15 @@ def index(api_data):
 # get - Pulls variables based on mac/index
 def get(api_data, mac):
 	# List mac address values for temperature probes
-	print "index:%s description:'%s' celsius:%.2f fahrenheit:%.2f" % ( mac, api_data['temperature'][mac]['description'], api_data['temperature'][mac]['celsius'], api_data['temperature'][mac]['fahrenheit'] )
+	print "index:%s celsius:%.2f fahrenheit:%.2f" % ( mac, api_data['temperature'][mac]['celsius'], api_data['temperature'][mac]['fahrenheit'] )
+
+	return
+
+# get - Pulls variables based on mac/index
+def query(api_data):
+	for mac in api_data['temperature']:
+		# List mac address values for temperature probes
+		print "index:%s celsius:%.2f fahrenheit:%.2f" % ( mac, api_data['temperature'][mac]['celsius'], api_data['temperature'][mac]['fahrenheit'] )
 
 	return
 
