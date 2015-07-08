@@ -1,14 +1,15 @@
-<interface>
-   <name>Get Temperature from Rasberry PI API</name>
-   <script_path>/usr/bin/env python |path_cacti|/scripts/rasberry_pi_temp.py</script_path>
+<raspberry_pi>
+
+   <name>Get Temperature from Raspberry PI API</name>
+   <script_path>/usr/bin/env python |path_cacti|/scripts/rasberry_pi_temperature_probe.py</script_path>
    <arg_prepend>|host_hostname|</arg_prepend>
    <arg_index>index</arg_index>
    <arg_query>query</arg_query>
    <arg_get>get</arg_get>
    <arg_num_indexes>num_indexes</arg_num_indexes>
-   <output_delimeter>:</output_delimeter>
+   <output_delimeter>|</output_delimeter>
    <index_order>index</index_order>
-   <index_order_type>numeric</index_order_type>
+   <index_order_type>alphabet</index_order_type>
    <index_title_format>|chosen_order_field|</index_title_format>
 
    <fields>
@@ -33,4 +34,5 @@
          <query_name>fahrenheit</query_name>
       </fahrenheit>
    </fields>
-</interface>
+
+</raspberry_pi>

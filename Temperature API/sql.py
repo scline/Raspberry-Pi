@@ -56,8 +56,8 @@ def temperature(db_file, db_table, json):
 	c.execute(sql)
 	rows = c.fetchall()
 
-	for row in rows:
-		print row
+	#for row in rows:
+	#	print row
 
 	# Close open connections
 	c.close()    

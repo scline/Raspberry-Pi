@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# Script to pull temperature data from Rasberry Pi probe via API call
+# Script to pull temperature data from Rasberry Pi probe via API call, this is for cacti monitoring system use only.
 
 import sys, urllib, json
 
@@ -33,11 +33,11 @@ def main():
 		num_indexes(api_data)
 
 	if (CMD == 'get'):
-		get(api_data, sys.argv[3])
+		# rasberry_pi_temperature_probe.py 192.168.200.31 get fahrenheit 28-041501e81bff
+		get(api_data, sys.argv[3], sys.argv[4])
 
-	if (CMD == 'query'):
-		query(api_data)
-
+	if CMD == 'query' and len(sys.argv) > 3:
+		query(api_data, sys.argv[3])
 	return
 
 # num_indexes - how manny mac addresses are present in the api call
@@ -49,24 +49,29 @@ def num_indexes(api_data):
 
 # index - list the mac address of each temperature probe
 def index(api_data):
-	# List mac address values for temperature probes
+	# List mac address values for temperature probes, used as index
 	for index in api_data['temperature']:
 		print index
 
 	return
 
 # get - Pulls variables based on mac/index
-def get(api_data, mac):
+def get(api_data, var, index):
 	# List mac address values for temperature probes
-	print "index:%s celsius:%.2f fahrenheit:%.2f" % ( mac, api_data['temperature'][mac]['celsius'], api_data['temperature'][mac]['fahrenheit'] )
+	print "%s" % ( api_data['temperature'][index][var])
 
 	return
 
 # get - Pulls variables based on mac/index
-def query(api_data):
-	for mac in api_data['temperature']:
-		# List mac address values for temperature probes
-		print "index:%s celsius:%.2f fahrenheit:%.2f" % ( mac, api_data['temperature'][mac]['celsius'], api_data['temperature'][mac]['fahrenheit'] )
+def query(api_data, var):
+	if var == 'index':
+		# Lists output of "index:index" for cacti to record index value and order
+		for index in api_data['temperature']:
+			print "%s|%s" % ( index, index )
+	else:
+		# Lists output of "index:value" for cacti to record a value related to an index
+		for index in api_data['temperature']:
+			print "%s|%s" %( index, api_data['temperature'][index][var] )
 
 	return
 
