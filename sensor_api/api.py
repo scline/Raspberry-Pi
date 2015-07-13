@@ -9,7 +9,7 @@
 import ConfigParser, dallas, json, sql
 from flask import Flask, request, jsonify
 
-CONFIG_FILE = "app.conf"
+CONFIG_FILE = "/opt/sensor_api/config/api.conf"
 
 # Load config file and store section in dictionary format
 def loadconfig(section):

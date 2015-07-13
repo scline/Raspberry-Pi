@@ -68,4 +68,3 @@ def temperature(db_file, db_table, json):
 if __name__ == '__main__':
 	main("test", "temperature")
 	sys.exit(0)
-#temperature("local.db", "temperature", json['temperature'])
