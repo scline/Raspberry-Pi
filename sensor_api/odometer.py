@@ -19,7 +19,7 @@ io.setup(magnetic_pin, io.IN, pull_up_down=io.PUD_UP)
 state = 0
 
 # Radius of the wheel in meters
-radius = 0.2794
+radius = 0.1397
 
 # Distance Calculations
 distance = 2*3.1416*radius
@@ -35,17 +35,14 @@ while True:
 
 	# Connected state
 	if io.input(magnetic_pin):
-	
+
 		if state == 1:
 			counter = counter + 1
-			
+
 			# Update local file for counter
 			target = open(readout_file, 'w')
 			target.write('''{ "odometer": { "count": %i, "distance": { "meters": %i, "miles": %.2f  } } }''' % ( counter, counter*distance, counter*distance*0.00062137 ))
 			target.close()
-
-			#print '''{ "odometer": { "count": %i, "distance": { "meters": %i, "miles": %.2f  } } }''' % ( counter, counter*distance, counter*distance*0.00062137 )
-			
 
 		state = 0
 
