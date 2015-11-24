@@ -77,7 +77,7 @@ def query(api_data, var):
 
 def api_call(HOST):
 	# Get json data from API call, ref http://stackoverflow.com/questions/12965203/how-to-get-json-from-webpage-into-python-script
-	url = "http://%s/api/temperature/get" % ( HOST )
+	url = "http://%s/api/temperature/get_cached" % ( HOST )
 	response = urllib.urlopen(url);
 
 	# Store json data into variable

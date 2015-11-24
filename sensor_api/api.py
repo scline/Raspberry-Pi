@@ -10,6 +10,7 @@ import ConfigParser, dallas, json, sql
 from flask import Flask, request, jsonify
 
 CONFIG_FILE = "/opt/sensor_api/config/api.conf"
+TEMPERATURE_CACHE = "/opt/sensor_api/data/temperature.cache"
 
 # Load config file and store section in dictionary format
 def loadconfig(section):
@@ -51,6 +52,27 @@ def temperature_get():
 				# Ignore and move on
 				pass
 
+	# Load cache file data
+	config_section_temperature = loadconfig('TEMPERATURE')
+	temperature_file = config_section_temperature.get('file')
+
+	# Write output to file
+	with open(temperature_file , 'w') as outfile:
+		json.dump(json_data, outfile)
+
+	# Defined in dallas.py script
+	return jsonify(json_data), 200
+
+# Gets temperature data and displays data as JSON, this is pulled from a cached file for quicker polling
+@app.route('/api/temperature/get_cached', methods=['GET'])
+def temperature_get_cached():
+
+	config_section_temperature = loadconfig('TEMPERATURE')
+	temperature_file = config_section_temperature.get('file')
+
+	json_dump = open(temperature_file).read()
+	json_data = json.loads(json_dump)
+
 	# Defined in dallas.py script
 	return jsonify(json_data), 200
 
@@ -90,7 +112,7 @@ def temperature_set():
 def odometer_get():
 	# Load configuration settings
 	config_section_odometer = loadconfig('ODOMETER')
-	odometer_file = config_section_odometer .get('file')
+	odometer_file = config_section_odometer.get('file')
 
 	json_dump = open(odometer_file).read()
 	json_data = json.loads(json_dump)
