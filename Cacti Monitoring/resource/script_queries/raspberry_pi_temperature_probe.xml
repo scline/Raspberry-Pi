@@ -33,6 +33,11 @@
          <direction>output</direction>
          <query_name>fahrenheit</query_name>
       </fahrenheit>
+      <humidity>
+         <name>Humidity</name>
+         <direction>output</direction>
+         <query_name>humidity</query_name>
+      </humidity>
    </fields>
 
 </raspberry_pi>
