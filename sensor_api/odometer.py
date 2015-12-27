@@ -35,14 +35,17 @@ while True:
 
 	# Connected state
 	if io.input(magnetic_pin):
-
+	
 		if state == 1:
 			counter = counter + 1
-
+			
 			# Update local file for counter
 			target = open(readout_file, 'w')
 			target.write('''{ "odometer": { "count": %i, "distance": { "meters": %i, "miles": %.2f  } } }''' % ( counter, counter*distance, counter*distance*0.00062137 ))
 			target.close()
+
+			#print '''{ "odometer": { "count": %i, "distance": { "meters": %i, "miles": %.2f  } } }''' % ( counter, counter*distance, counter*distance*0.00062137 )
+			
 
 		state = 0
 

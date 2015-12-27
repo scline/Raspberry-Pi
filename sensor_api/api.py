@@ -6,11 +6,11 @@
 # Last Update by Sean Cline (smcline06@gmail.com)
 # Date: 06/23/2015
 
-import ConfigParser, dallas, json, sql
+import ConfigParser, json
 from flask import Flask, request, jsonify
+from lib import ds18b20, sql
 
 CONFIG_FILE = "/opt/sensor_api/config/api.conf"
-TEMPERATURE_CACHE = "/opt/sensor_api/data/temperature.cache"
 
 # Load config file and store section in dictionary format
 def loadconfig(section):
@@ -40,7 +40,7 @@ def temperature_get():
 	config_section_temperature = loadconfig('TEMPERATURE')
 
 	# Define JSON key
-	json_data['temperature'] = dallas.main()
+	json_data['temperature'] = ds18b20.main()
 
 	# Add JSON value for temperature probe description if defined in config file
 	for key in config_section_temperature.keys():
@@ -60,7 +60,7 @@ def temperature_get():
 	with open(temperature_file , 'w') as outfile:
 		json.dump(json_data, outfile)
 
-	# Defined in dallas.py script
+	# Defined in ds18b20.py script
 	return jsonify(json_data), 200
 
 # Gets temperature data and displays data as JSON, this is pulled from a cached file for quicker polling
@@ -73,7 +73,7 @@ def temperature_get_cached():
 	json_dump = open(temperature_file).read()
 	json_data = json.loads(json_dump)
 
-	# Defined in dallas.py script
+	# Defined in ds18b20.py script
 	return jsonify(json_data), 200
 
 # Gets temperature data and displays data as JSON and store in local SQL databace
@@ -86,7 +86,7 @@ def temperature_set():
 	config_section_temperature = loadconfig('TEMPERATURE')
 
 	# Get temperature data from hardware probes, store in json 
-	json_data['temperature'] = dallas.main()
+	json_data['temperature'] = ds18b20.main()
 
 	# Add JSON value for temperature probe description if defined in config file
 	for key in config_section_temperature.keys():
@@ -104,7 +104,7 @@ def temperature_set():
 
 	sql.temperature(db_database, db_table, json_data['temperature'])
 
-	# Defined in dallas.py script
+	# Defined in ds18b20.py script
 	return jsonify(json_data), 200
 
 # Gets odometer data and displays data as JSON
@@ -117,9 +117,8 @@ def odometer_get():
 	json_dump = open(odometer_file).read()
 	json_data = json.loads(json_dump)
 
-	# Defined in dallas.py script
+	# Defined in ds18b20.py script
 	return jsonify(json_data), 200
-
 
 # Start program
 if __name__ == '__main__':
