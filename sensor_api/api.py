@@ -1,14 +1,11 @@
 #!flask/bin/python
- 
+
 # This application is for a Rasberry Pi web server that responds with stats via API calls
 # Later this may have some sort of GUI to make things pretty...
-#
-# Last Update by Sean Cline (smcline06@gmail.com)
-# Date: 06/23/2015
 
-import ConfigParser, json
+import ConfigParser, json, Adafruit_DHT
 from flask import Flask, request, jsonify
-from lib import ds18b20, sql
+from lib import ds18b20, dht22, sql
 
 CONFIG_FILE = "/opt/sensor_api/config/api.conf"
 
@@ -39,8 +36,15 @@ def temperature_get():
 	# Load configuration settings
 	config_section_temperature = loadconfig('TEMPERATURE')
 
-	# Define JSON key
+	# Define JSON key and load data from ds18b20
 	json_data['temperature'] = ds18b20.main()
+
+	if config_section_temperature.get('dht22_enabled') == "1":
+		# Load DHT22 temperature if enabled in config, will cause 30s delay if sensor does not exsist!
+		json_data['temperature'].update(dht22.main())
+	else:
+		# Ignore getting DHT22 data and move on
+		pass
 
 	# Add JSON value for temperature probe description if defined in config file
 	for key in config_section_temperature.keys():
@@ -53,7 +57,6 @@ def temperature_get():
 				pass
 
 	# Load cache file data
-	config_section_temperature = loadconfig('TEMPERATURE')
 	temperature_file = config_section_temperature.get('file')
 
 	# Write output to file
