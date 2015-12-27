@@ -21,6 +21,14 @@ w1-therm
 Then reboot the system so the settings take affect.
 
 
+
+------------------- DHT22
+Install https://github.com/adafruit/Adafruit_Python_DHT ot /opt
+
+
+
+
+
 ---NEEDS UPDATING---
 You can validate temperature sensors are being read by running "ls /sys/bus/w1/devices/". You should see folders "XX-XXXXXXXXXXXX", one for each temperature sensor. These are also the serial numbers per device.
 
@@ -33,10 +41,17 @@ Gets all temperature readings from all attached probes. This call takes ~5sec pe
 {
   "temperature": {
     "28-031501edd7ff": {
-      "celsius": 24.56, 
+      "celsius": 23.38, 
       "crc error": false, 
-      "datetime": "2015-12-26 23:16", 
-      "fahrenheit": 76.21
+      "datetime": "2015-12-27 02:01", 
+      "fahrenheit": 74.08
+    }, 
+    "dht22": {
+      "celsius": 27.2, 
+      "crc error": "false", 
+      "datetime": "2015-12-27 02:01", 
+      "fahrenheit": 80.96, 
+      "humidity": 19.2
     }
   }
 }
@@ -44,17 +59,6 @@ Gets all temperature readings from all attached probes. This call takes ~5sec pe
 
 ### http:{ip}/api/temperature/get_cached
 Gets all temperature readings the most recent cached data, cached data is created when running the '/api/temperature/get' call. And easy way to always have recent data is to cron a curl command. Cached calls are near-instant. 
-```
-{
-  "temperature": {
-    "28-031501edd7ff": {
-      "celsius": 24.56, 
-      "crc error": false, 
-      "datetime": "2015-12-26 23:16", 
-      "fahrenheit": 76.21
-    }
-  }
-}
 
 ### http:{ip}/api/temperature/set
 TBA
