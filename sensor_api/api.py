@@ -36,6 +36,9 @@ def temperature_get():
 	# Load configuration settings
 	config_section_temperature = loadconfig('TEMPERATURE')
 
+	# Load Callibration settings for defined probes
+	config_section_callibrate = loadconfig('CALLIBRATE')
+
 	# Define JSON key and load data from ds18b20
 	json_data['temperature'] = ds18b20.main()
 
@@ -54,6 +57,28 @@ def temperature_get():
 				json_data['temperature'][key].update({"description":config_section_temperature.get(key)})
 			except:
 				# Ignore and move on
+				pass
+
+	# Does some math to alter the readings if sensor is off
+	for key in config_section_callibrate.keys():
+		if key is not "__name__":
+			try:
+				# Pulls the correction value from config file per sensor name
+				correction_value = float(config_section_callibrate[key])
+				# Current and incorrect temperature value
+				original_celsius = float(json_data['temperature'][key]['celsius'])
+
+				# Find new celsius value
+				correct_celsius = original_celsius + correction_value
+
+				# Calculate new fahrenheit values
+				correct_fahrenheit = 9.0/5.0 * correct_celsius + 32
+
+				# Update the JSON with correct values
+				json_data['temperature'][key].update({"celsius":round(correct_celsius,2)})
+				json_data['temperature'][key].update({"fahrenheit":round(correct_fahrenheit,2)})
+			except:
+				# Ignore and move on, write message to console
 				pass
 
 	# Load cache file data
